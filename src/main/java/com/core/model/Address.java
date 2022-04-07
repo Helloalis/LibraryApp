@@ -113,6 +113,14 @@ public class Address {
 	public void setZipCode(int zipCode) {
 		this.zipCode = zipCode;
 	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
 	
 	
 

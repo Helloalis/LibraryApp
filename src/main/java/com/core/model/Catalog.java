@@ -14,11 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "location", "book", "format" }) })
 public class Catalog {
 
 	@Id
@@ -36,11 +37,11 @@ public class Catalog {
 	
 	private double price;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "bookId")
 	private Book book;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "locId")
 	private Location location;
 	

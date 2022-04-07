@@ -7,5 +7,6 @@ import com.core.model.Copy;
 
 @Repository
 public interface CopyRepository extends JpaRepository<Copy, Integer> {
-
+	
+	
 }

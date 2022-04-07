@@ -1,0 +1,137 @@
+Library Simulator
+
+Books table - 
+	bookId - pk
+	title
+	author
+	price
+	isbn
+	description
+	Long checkedOut - increments each time a book is checked - internal statistic. I think libraries do this, partially for pushing for funding? not relevant, interesting
+	
+
+Location
+	Location Id pk
+	Name
+	Address Foreign key - One to one
+
+Catalog - MM from Books to location
+	catalogId - pk
+	bookId
+	locationId, can be null? or have a online location
+	String Format - eBook, paperBack, hardCover, audioBook
+	int Quantity(number of copies in that location)
+	int checkedOut - how many copies checked out
+	location(Within library? Dewey Decimal for non fic, overhead category(Childrens, teens, adult), then Smaller categories(Adults have mystery, romance, scifi, comics) - look up how SS-MCPL does it
+
+Copies- represent books currently checked out/Individual Copies - many to many with Patron and Catalog
+	copyId pk
+	catalogId
+	patronId
+	boolean checkedOut
+	Date dueDate
+
+Patron
+	patronId pk
+	String name
+	String email
+	String libraryCardString
+	int booksOut(Limit how many books out?)
+	boolean overdue (Any Books Overdue?)
+	
+
+
+
+
+Check books out process
+different process for in person or not(If format is in [e-audiobook or ebook], not in person, if format is [paperBack, hardCover, comic, or audioBook), is in person
+
+	Scenario - Someone goes to library, grabs book (or movie, or game, or audiobook, or comic, whatever), goes to scanner machine or librarian, and ask to checkout.
+	Machine and Librarian would require patron to scan their library card, and then the book
+	Librarian would be an admin account
+	
+	--Note - how to simulate machine. Scanning Library Card signs User into machine, which can 
+		1) Display Fines
+		2) Display OutBooks
+		3) Checkout Books
+		
+		Problem - machine does not ask for username or password
+		Solution - LibraryCard sufficient for sign in
+			Problem - How to implement?
+				Possible Solution - Library Card String is a permanent jwt, contains all info need for signin?
+				Possible Solution - New Authenticantion Method, only accepts LibraryCard. Not available on website, 
+				
+		Limited Options Simulated by only having a small set of selectable buttons
+
+	checkOutInPerson(given parameters - copyId, userLibraryCard)
+		1) Query copies table for copy with that id, store as Copy scanned
+		2) Query user table for user with that libraryCard, store as User patron; 
+
+
+
+
+1) Is checkout in person
+	If yes
+		scan barcode of copy(gets sent id)
+		find copyId
+		set date to currentDate plus 3 weeks, at 12:00 PM
+		
+Check if copy is available i.e. quantity > checkedOut
+2) If yes
+	CopyId - Each Physical copy of a book has a barcode - unsure for ebooks, reuse concept
+		query Out table for catalogId.
+	add to Patron
+3) If no
+	return "All copies checked out"
+	
+Return Book process	
+	Find the book with the id.
+	
+	
+	
+	
+How does the inventory work
+	Program represents a library system
+	Location represents an individual library
+	
+	A library has an inventory represented by a collection of catalog objects
+	
+	each catalog object is indentified by a location, a book, and a format.
+		So a catalog object with Brookside location, A Throne of Swords, and hardcover format would contain all of the brookSide library's copies of AThroneOfSwords in Hardcover
+		
+		The Copy object represents each individual copy. Since the catalog has a collection of copies, the copy object doesn't need to hold the data on what library, what book, or what format it is.
+		It does hold the date its due by and the person whos checked it out, as well as an id. Theoretically, a user would scan a barcode on the copy, which would tell the system what copy it is. Then the system can use that info, through a series of calls, to add it to the user's outBooks
+	
+	
+	
+How do fines work?
+	Theoretically, a check for overdue books would be automatically performed each morning. 
+	This may take a while, depending on the size of the library, so it should be done prior to when anyone needs to start.
+	Ideally, the first librarian should have access to a report on all overdue books, and reminders may be sent, or if applicable, automatically renewed.
+	
+	The check would query all copies that are 1) Checked out, and whose due dates are more than two days old.
+	Each day past the second a book is overdue, a 15 cents fine is added, up to 3 times the price of the book. If a book is overdue by one year, the copy is deleted, and added to the order list(not featured)
+	
+	
+	Side Note: Some Libraries have done away with fines. Currently uncertain as to whether to implement that. Fines are ineffective, and actually counterproductive, as a means to ensure book returns. 
+		Someone with a fine is less likely to return a book, as they don't have to pay if they never go to the library. Especially harmful to communities with low incomes, or children
+		Fines make up less 1% of at least one public library system
+		
+		Another alternative is to allow people, or at least children, to read for periods of time to remove fines. Unsure of application
+			Possible application: Reading for 15 minutes removes 15 cents from fine
+			Other possible Application: Read for a set amount of time, remove all fines
+		
+		
+		https://www.forbes.com/sites/rachelkramerbussel/2021/07/30/libraries-across-the-united-states-are-ending-fines-for-overdue-books/?sh=43b2ffd3479b
+		
+		The American Library Association passed a resolution in January 2019 stating, “The American Library Association asserts that imposition of monetary library fines creates a barrier to the provision of library and information services.”
+		https://www.ala.org/aboutala/sites/ala.org.aboutala/files/content/Resolution%20on%20Monetary%20Library%20Fines%20as%20a%20Form%20of%20Social%20Inequity-FINAL.pdf
+	
+	
+Renewal feature - unimplemented
+	If a reader wishes to continue reading a book, but the book is due, the reader can renew it. 
+	This would be allowed if a book has not already been renewed twice, and the book is not on some other users hold.
+	Renewing a book would add three weeks to the previous return date. A book overdue by 3 weeks cannot be renewed.
+	
+	A book that is eligiable for renewal could be automatically renewed if overdue.
+	

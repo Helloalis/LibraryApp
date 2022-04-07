@@ -1,5 +1,12 @@
 package com.core.repository;
 
-public class AddressRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.core.model.Address;
+import com.core.model.Catalog;
+
+@Repository
+public interface AddressRepository extends JpaRepository<Address, Integer> {
 
 }

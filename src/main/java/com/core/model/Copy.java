@@ -3,7 +3,6 @@ package com.core.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,12 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="Copies")
@@ -32,9 +28,9 @@ public class Copy {
 	private Catalog catalog;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "patronId")
+    @JoinColumn(name = "userId")
 	@JsonBackReference
-	private User patron;
+	private User user;
 	
 	private boolean checkedOut;
 	
@@ -47,11 +43,11 @@ public class Copy {
 		this.copyId = null;
 	}
 
-	public Copy(Catalog catalog, User patron, boolean checkedOut, LocalDate dueDate) {
+	public Copy(Catalog catalog, User user, boolean checkedOut, LocalDate dueDate) {
 		super();
 		this.copyId = null;
 		this.catalog = catalog;
-		this.patron = patron;
+		this.user = user;
 		this.checkedOut = checkedOut;
 		this.dueDate = dueDate;
 	}
@@ -90,12 +86,12 @@ public class Copy {
 		this.catalog = catalog;
 	}
 
-	public User getPatron() {
-		return patron;
+	public User getUser() {
+		return user;
 	}
 
-	public void setPatron(User patron) {
-		this.patron = patron;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public boolean isCheckedOut() {
