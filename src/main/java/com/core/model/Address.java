@@ -34,6 +34,21 @@ public class Address {
 	
 	
 
+	public Address() {
+		super();
+		this.addressId = null;
+	}
+
+	public Address(String address, String state, String city, int zipCode, Location location) {
+		super();
+		this.addressId = null;
+		this.address = address;
+		this.state = state;
+		this.city = city;
+		this.zipCode = zipCode;
+		this.location = location;
+	}
+
 	@Override
 	public String toString() {
 		return address + " " + city + ", " + state + " " + zipCode;
