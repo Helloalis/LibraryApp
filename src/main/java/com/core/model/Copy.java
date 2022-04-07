@@ -34,7 +34,7 @@ public class Copy {
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "patronId")
 	@JsonBackReference
-	private Patron patron;
+	private User patron;
 	
 	private boolean checkedOut;
 	
@@ -47,7 +47,7 @@ public class Copy {
 		this.copyId = null;
 	}
 
-	public Copy(Catalog catalog, Patron patron, boolean checkedOut, LocalDate dueDate) {
+	public Copy(Catalog catalog, User patron, boolean checkedOut, LocalDate dueDate) {
 		super();
 		this.copyId = null;
 		this.catalog = catalog;
@@ -90,11 +90,11 @@ public class Copy {
 		this.catalog = catalog;
 	}
 
-	public Patron getPatron() {
+	public User getPatron() {
 		return patron;
 	}
 
-	public void setPatron(Patron patron) {
+	public void setPatron(User patron) {
 		this.patron = patron;
 	}
 
